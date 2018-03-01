@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const inputFilename = "in/b_should_be_easy.in";
+const inputFilename = process.argv[2] || "in/a_example.in";
 const filenameToCopyInputData = "data.in.js";
 
 let isNotEmpty = (s) => s !== '';
