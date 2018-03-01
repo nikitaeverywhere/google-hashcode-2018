@@ -29,14 +29,12 @@ for (let tick = 1; tick <= info.stepsCount; tick++) {
     let freeCars = getFreeCard(cars, tick);
     freeCars.forEach((car, index) => {
         let validRoutes = data.filter(route => shouldDoRoute(car, route, tick));
-        let n = (validRoutes.length > 5) ? 5 : validRoutes.length;
-        validRoutes = validRoutes.slice(0, n);
         validRoutes.map(route => {
-            route.tfdr = ticksForDoingRoute(route);
+            route.ttsp = ticksToStartPosition(car, route)
         });
-        validRoutes = validRoutes.sort(compare("tfdr"));
+        validRoutes = validRoutes.sort(compare("ttsp"));
 
-        let firstValidRoute = validRoutes[validRoutes.length - 1];
+        let firstValidRoute = validRoutes[0];
 
         if (firstValidRoute) {
             applyRouteToCar(firstValidRoute, car, tick);
