@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const inputFilename = "in/a_example.in";
+const inputFilename = "in/b_should_be_easy.in";
 const filenameToCopyInputData = "data.in.js";
 
 let isNotEmpty = (s) => s !== '';
@@ -52,3 +52,4 @@ function parseMatrixLine(line) {
         f: parseInt(lineItems[5])
     }
 }
+

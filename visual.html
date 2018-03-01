@@ -15,7 +15,53 @@
         example.width = 1800;
         example.height = example.width;
 
-        // code here
+        let squareSize = example.width / Math.max(info.rowCount, info.colCount);
+
+        let itemColorMap = new WeakMap();
+// a - row , b - col, x - row, y - col
+        console.log(info)
+        for (let i = 0; i < info.rowCount; i++)
+            for (let j = 0; j < info.colCount; j++) {
+                let color = (i + j) % 2 ? "#ccc" : "#cbe5f6";
+                c.fillStyle = color;
+                c.fillRect(
+                    i * squareSize,
+                    j * squareSize,
+                    i * squareSize + squareSize,
+                    j * squareSize + squareSize);
+
+                data.forEach(function (item, index) {
+                    let isStartCell = item.a === i && item.b === j;
+                    let isEndCell = item.x === i && item.y === j;
+                    console.log(item.x, item.y, i, j, isEndCell)
+                    if (isStartCell || isEndCell) {
+                        let color = itemColorMap.has(item)
+                            ? itemColorMap.get(item)
+                            : randColor();
+
+                        itemColorMap.set(item, color);
+
+                        c.fillStyle = color;
+                        c.beginPath();
+                        c.arc(i * squareSize + squareSize / 2, j * squareSize + squareSize / 2, squareSize / 3, 0, 2 * Math.PI)
+                        c.fill();
+                    }
+                });
+
+                console.log("--------")
+            }
+
+        function randColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+
+
     })();
 </script>
 </body>
