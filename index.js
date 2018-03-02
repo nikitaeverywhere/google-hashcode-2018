@@ -61,23 +61,44 @@ let car = -1,
 	rides = 0,
 	usedCars = 0;
 
+function weight (distanceToRide, ride, freeTime) {
+	return distanceToRide * 2 + Math.sqrt(Math.abs(freeTime));
+}
+
 console.log(`Working on cars: ${ input.numOfCars }`);
-outerLoop: while (++car < input.numOfCars) {
+while (++car < input.numOfCars) {
 	let location = [0, 0],
 		time = 0,
 		used = false;
 	const out = [];
 	for (let i = 0; i < input.rides.length; ++i) {
-		const ride = input.rides[i];
-		const distToHuman = distance(ride.from[0], ride.from[1], location[0], location[1]);
-		if (time + distToHuman <= ride.end - ride.dist) {
+        const possibleRides = [];
+		for (let j = i; j < input.rides.length && j - i < 4000; ++j) { // lookahead for bonus
+			const ride = input.rides[j];
+            const distToHuman = distance(ride.from[0], ride.from[1], location[0], location[1]);
+			if (time + distToHuman <= ride.end - ride.dist) {
+				possibleRides.push(j);
+			}
+		}
+		possibleRides.sort((i1, i2) => {
+			const ride1 = input.rides[i1];
+            const ride2 = input.rides[i2];
+            const d1 = distance(ride1.from[0], ride1.from[1], location[0], location[1]);
+            const d2 = distance(ride2.from[0], ride2.from[1], location[0], location[1]);
+            const a1 = weight(d1, ride1, ride1.start - time - d1);
+            const a2 = weight(d2, ride2, ride2.start - time - d2);
+            return a1 - a2;
+		});
+		if (possibleRides.length) {
+			const ride = input.rides[possibleRides[0]];
 			//console.log(`Car ${ car } takes ride ${ ride.id } (${ time + distToHuman } -> ${ time + distToHuman + ride.dist }) while (${ ride.start } -> ${ ride.end }) ${ time + distToHuman + ride.dist <= ride.end }`);
 			used = true;
 			out.push(ride.id);
-			time += distToHuman + ride.dist;
+			time += distance(ride.from[0], ride.from[1], location[0], location[1]) + ride.dist;
 			location = ride.to.slice();
-			input.rides.splice(i, 1);
-			--i;
+			input.rides.splice(possibleRides[0], 1);
+			if (possibleRides[0] === i)
+				--i;
 		}
 	}
 	if (used)
